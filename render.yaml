@@ -1,3 +1,9 @@
+databases:
+  - name: dianaburguers-db
+    plan: free
+    databaseName: dianaburguers
+    user: dianaburguers
+
 services:
   - type: web
     name: dianaburguers
@@ -5,3 +11,26 @@ services:
     dockerfilePath: ./Dockerfile
     plan: free
     healthCheckPath: /DianaBurgers/principal.html
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: postgres
+      - key: DB_HOST
+        fromDatabase:
+          name: dianaburguers-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: dianaburguers-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: dianaburguers-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: dianaburguers-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: dianaburguers-db
+          property: password
