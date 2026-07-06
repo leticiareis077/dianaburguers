@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entregador — Diana Burguer's</title>
+  <link rel="shortcut icon" href="../IMG/icon.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../CSS/global.css">
+  <link rel="stylesheet" href="../CSS/entregador.css">
+
+  <style>
+    .toast-drv {
+      position: fixed; bottom: 2.5rem; right: 2.5rem;
+      background: #1a1a18; color: #fff;
+      border: 1px solid #4caf50;
+      border-radius: 0.8rem; padding: 1.2rem 2rem;
+      font-size: 1.4rem; font-weight: 600;
+      z-index: 9999; transform: translateY(80px); opacity: 0;
+      transition: 0.3s; pointer-events: none;
+    }
+    .toast-drv.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <div class="toast-drv" id="toast-drv"></div>
+
+  <!-- ══ TOPBAR ══ -->
+  <div class="drv-topbar">
+    <div class="drv-topbar-left">
+      <div class="drv-brand">Diana<span>Burguer's</span></div>
+      <div class="drv-badge">
+        <div class="drv-badge-dot"></div>
+        <span>Entregador</span>
+      </div>
+    </div>
+    <button class="btn-voltar-admin" onclick="window.location.href='admin.html'">
+      ← Voltar ao Admin
+    </button>
+  </div>
+
+  <!-- ══ CORPO ══ -->
+  <div class="drv-body">
+
+    <!-- Stats -->
+    <div class="drv-stats">
+      <div class="drv-stat">
+        <div class="drv-stat-num" id="drv-count-pend">0</div>
+        <div class="drv-stat-lbl">Para entregar</div>
+      </div>
+      <div class="drv-stat">
+        <div class="drv-stat-num verde" id="drv-count-done">0</div>
+        <div class="drv-stat-lbl">Entregues hoje</div>
+      </div>
+    </div>
+
+    <!-- Comandas -->
+    <div class="drv-sec-label">📋 Comandas de entrega</div>
+    <div id="drv-lista"></div>
+
+  </div>
+
+  <script src="../JS/entregador.js"></script>
+</body>
+</html>

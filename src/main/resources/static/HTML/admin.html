@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Diana Burguer's</title>
+  <link rel="shortcut icon" href="../IMG/icon.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../CSS/global.css">
+  <link rel="stylesheet" href="../CSS/admin.css">
+  <style>
+    .toast-admin{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none}
+    .toast-admin.show{transform:translateY(0);opacity:1}
+  </style>
+</head>
+<body>
+<div class="toast-admin" id="toast-admin"></div>
+
+<!-- ══ LOGIN ══ -->
+<div id="tela-login" class="admin-login-wrap">
+  <div class="admin-login-box">
+    <div class="logo-big">Diana<span>Burguer's</span></div>
+    <p>Acesso restrito — Painel Administrativo</p>
+    <div class="login-field"><label>E-mail</label><input type="email" id="adm-email" placeholder="admin@dianaburgers.com"></div>
+    <div class="login-field"><label>Senha</label><input type="password" id="adm-senha" placeholder="••••••••"></div>
+    <div class="login-erro" id="adm-erro"></div>
+    <button class="btn-login-admin" onclick="tentarLogin()">Entrar no Painel</button>
+
+    <div style="margin-top:2rem;padding-top:2rem;border-top:1px solid #eee">
+      <a href="../principal.html" style="font-size:1.3rem;color:#aaa;text-decoration:none">← Voltar ao site</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAINEL ══ -->
+<div id="tela-painel" style="display:none">
+  <div class="admin-wrap">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-logo"><div class="logo">Diana<span>Burguer's</span></div><p style="font-size:12px;color:var(--text2);margin-top:2px" id="admin-nome">Painel Admin</p></div>
+      <div class="sb-label">Geral</div>
+      <div class="sb-item active" data-aba="dash"   onclick="irAba('dash')">  <span class="sb-icon">📊</span>Dashboard</div>
+      <div class="sb-item"        data-aba="orders" onclick="irAba('orders')"><span class="sb-icon">📋</span>Pedidos</div>
+      <div class="sb-label">Conteúdo</div>
+      <div class="sb-item"        data-aba="prods"  onclick="irAba('prods')"> <span class="sb-icon">🍔</span>Produtos</div>
+      <div class="sb-item"        data-aba="promo"  onclick="irAba('promo')"> <span class="sb-icon">🎉</span>Promoções</div>
+      <div class="sb-item"        data-aba="store"  onclick="irAba('store')"> <span class="sb-icon">🏪</span>Info da loja</div>
+      <div class="sb-label admin-only">Financeiro</div>
+      <div class="sb-item admin-only" data-aba="fin"  onclick="irAba('fin')"> <span class="sb-icon">💰</span>Lucros</div>
+      <div class="sb-item admin-only" data-aba="top"  onclick="irAba('top')"> <span class="sb-icon">🏆</span>Mais pedidos</div>
+      <div class="sb-label admin-only">Usuários</div>
+      <div class="sb-item admin-only" data-aba="users" onclick="irAba('users')"><span class="sb-icon">👥</span>Clientes</div>
+      <div class="sb-label">Operação</div>
+      <div class="sb-item" onclick="goDrv()"><span class="sb-icon">🛵</span>Área do Entregador</div>
+      <div style="padding:16px 24px;border-top:1px solid var(--border);margin-top:8px">
+        <div class="sb-item" style="padding:10px 0" onclick="window.location.href='../principal.html'"><span class="sb-icon">👁️</span>Ver site</div>
+        <div class="sb-item" style="padding:10px 0;color:#e55" onclick="sairAdmin()"><span class="sb-icon">🚪</span>Sair do painel</div>
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <div class="a-content">
+
+      <!-- DASHBOARD -->
+      <div class="a-sec active" id="a-dash">
+        <div class="pg-title">Dashboard</div><div class="pg-sub">Visão geral do negócio</div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="sc-label">Pedidos</div><div class="sc-val" id="d-orders">0</div><div class="sc-change up">↑ total</div></div>
+          <div class="stat-card"><div class="sc-label">Receita</div><div class="sc-val" id="d-rev">R$0</div><div class="sc-change up">↑ acumulado</div></div>
+          <div class="stat-card"><div class="sc-label">Produtos</div><div class="sc-val" id="d-prods">0</div><div class="sc-change" style="color:var(--text2)">no cardápio</div></div>
+          <div class="stat-card"><div class="sc-label">Clientes</div><div class="sc-val" id="d-users">0</div><div class="sc-change" style="color:var(--text2)">cadastrados</div></div>
+        </div>
+        <div class="table-card">
+          <div class="tc-head"><span class="tc-title">Pedidos recentes</span></div>
+          <table><thead><tr><th>#</th><th>Cliente</th><th>Itens</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody id="dash-tbody"></tbody></table>
+        </div>
+        <!-- Atalho entregador -->
+        <div style="background:var(--accent-light);border:1px solid #f5c6a0;border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;margin-top:24px">
+          <div><strong style="font-size:15px">🛵 Área do Entregador</strong><p style="font-size:13px;color:var(--text2);margin-top:4px">Abra a tela de comandas para os entregadores</p></div>
+          <button class="btn btn-primary" onclick="goDrv()">Abrir Comandas →</button>
+        </div>
+      </div>
+
+      <!-- PEDIDOS -->
+      <div class="a-sec" id="a-orders">
+        <div class="pg-title">Pedidos</div><div class="pg-sub">Todos os pedidos recebidos</div>
+        <div class="table-card">
+          <div class="tc-head"><span class="tc-title">Lista de pedidos</span></div>
+          <table><thead><tr><th>#</th><th>Cliente</th><th>Itens</th><th>Total</th><th>Entrega</th><th>Pagamento</th><th>Status</th><th>Ação</th></tr></thead>
+          <tbody id="orders-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- PRODUTOS -->
+      <div class="a-sec" id="a-prods">
+        <div class="pg-title">Produtos</div><div class="pg-sub">Gerencie o cardápio</div>
+        <div class="form-panel">
+          <h4 id="pf-title">➕ Adicionar produto</h4>
+          <div class="f3">
+            <div class="form-group"><label>Nome</label><input id="p-name" placeholder="X-Bacon Especial"></div>
+            <div class="form-group"><label>Categoria</label><select id="p-cat"><option>Hambúrgueres</option><option>Pizzas</option><option>Bebidas</option></select></div>
+            <div class="form-group"><label>Preço (R$)</label><input type="number" id="p-price" step="0.01" min="0" placeholder="0,00"></div>
+          </div>
+          <div class="f2">
+            <div class="form-group"><label>Descrição</label><input id="p-desc" placeholder="Breve descrição"></div>
+            <div class="form-group"><label>Emoji</label><input id="p-emoji" placeholder="🍔" maxlength="4"></div>
+          </div>
+          <div class="form-group"><label>Custo de preparo (R$)</label><input type="number" id="p-cost" step="0.01" min="0" placeholder="0,00"></div>
+          <div class="form-group">
+            <label>Foto do produto</label>
+            <div style="display:flex;align-items:center;gap:14px">
+              <img id="p-img-preview" style="display:none;width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid var(--border)">
+              <input type="file" id="p-img" accept="image/*" onchange="onProdImgChange(event)">
+              <button type="button" class="btn btn-ghost" id="p-img-remove" style="display:none" onclick="removerImagemProd()">Remover foto</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:4px">
+            <button class="btn btn-primary" onclick="saveProd()">Salvar</button>
+            <button class="btn btn-ghost" id="cancel-edit" style="display:none" onclick="resetPF()">Cancelar edição</button>
+          </div>
+        </div>
+        <div class="prods-grid" id="prods-grid"></div>
+      </div>
+
+      <!-- PROMOÇÃO -->
+      <div class="a-sec" id="a-promo">
+        <div class="pg-title">Promoções</div><div class="pg-sub">Banner na página inicial</div>
+        <div class="form-panel"><h4>🎉 Banner de promoção</h4>
+          <div class="form-group"><label>Mostrar banner</label>
+            <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="promo-on" checked onchange="toggleBanner()"><span class="toggle-sl"></span></label><span id="promo-lbl" style="font-size:14px">Ativado</span></div>
+          </div>
+          <div class="form-group"><label>Título</label><input id="promo-t" value="🔥 Combo do Dia — Só hoje!"></div>
+          <div class="form-group"><label>Descrição</label><input id="promo-d" value="X-Bacon + Guaraná por R$24,00"></div>
+          <button class="btn btn-primary" onclick="savePromo()">Salvar promoção</button>
+        </div>
+      </div>
+
+      <!-- INFO DA LOJA -->
+      <div class="a-sec" id="a-store">
+        <div class="pg-title">Info da loja</div><div class="pg-sub">Dados exibidos no site</div>
+        <div class="form-panel">
+          <div class="f2">
+            <div class="form-group"><label>Nome</label><input id="s-name" value="Diana Burguer's"></div>
+            <div class="form-group"><label>WhatsApp</label><input id="s-phone" value="(79) 9 9999-0000"></div>
+          </div>
+          <div class="form-group"><label>Endereço completo</label><input id="s-addr" value="Parque da Sementeira, Aracaju - SE"></div>
+          <div class="f2">
+            <div class="form-group"><label>Horário resumido</label><input id="s-hours" value="Seg–Dom: 11h–22h"></div>
+            <div class="form-group"><label>Instagram</label><input id="s-insta" value="@dianaburgers"></div>
+          </div>
+          <div class="form-group"><label>Info delivery</label><input id="s-deliv" value="Taxa: R$5,00 · Mínimo: R$25,00 · 30–45 min"></div>
+          <button class="btn btn-primary" onclick="saveStore()">Salvar informações</button>
+        </div>
+      </div>
+
+      <!-- FINANCEIRO -->
+      <div class="a-sec admin-only" id="a-fin">
+        <div class="pg-title">Lucros</div><div class="pg-sub">Desempenho financeiro</div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="sc-label">Receita</div><div class="sc-val" id="f-rev">R$0</div></div>
+          <div class="stat-card"><div class="sc-label">Custo estimado</div><div class="sc-val" id="f-cost">R$0</div></div>
+          <div class="stat-card"><div class="sc-label">Lucro estimado</div><div class="sc-val" id="f-profit" style="color:var(--green)">R$0</div></div>
+          <div class="stat-card"><div class="sc-label">Margem</div><div class="sc-val" id="f-margin">0%</div></div>
+        </div>
+        <div class="table-card">
+          <div class="tc-head"><span class="tc-title">Receita por mês (demo)</span></div>
+          <div style="padding:20px"><div class="mo-chart" id="mo-chart"></div><div style="display:flex;justify-content:space-between;margin-top:4px" id="mo-labels"></div></div>
+        </div>
+      </div>
+
+      <!-- TOP VENDAS -->
+      <div class="a-sec admin-only" id="a-top">
+        <div class="pg-title">Mais pedidos</div><div class="pg-sub">Ranking de produtos</div>
+        <div class="form-panel"><h4>🏆 Produtos mais vendidos</h4><div id="top-chart"></div></div>
+      </div>
+
+      <!-- CLIENTES -->
+      <div class="a-sec admin-only" id="a-users">
+        <div class="pg-title">Clientes</div><div class="pg-sub">Base de usuários cadastrados</div>
+        <div class="table-card">
+          <div class="tc-head"><span class="tc-title">Todos os clientes</span></div>
+          <table><thead><tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Endereço</th><th>Pedidos</th><th>Total gasto</th></tr></thead>
+          <tbody id="users-tbody"></tbody></table>
+        </div>
+      </div>
+
+    </div><!-- /a-content -->
+  </div><!-- /admin-wrap -->
+</div><!-- /tela-painel -->
+
+<script src="../JS/global.js"></script>
+<script src="../JS/admin.js"></script>
+</body>
+</html>

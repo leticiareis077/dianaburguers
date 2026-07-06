@@ -1,0 +1,95 @@
+/* ═══════════════════════════════════════
+   ADMIN — Diana Burguer's
+═══════════════════════════════════════ */
+body { background:var(--bg);color:var(--text) }
+
+/* ── LOGIN ─────────────────────────── */
+.admin-login-wrap  { display:flex;min-height:100vh;align-items:center;justify-content:center;background:var(--bg);padding:2rem }
+.admin-login-box   { background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:420px;max-width:95vw;text-align:center;box-shadow:var(--shadow-md) }
+.logo-big          { font-family:'Oswald',sans-serif;font-size:4rem;font-weight:900;margin-bottom:8px;color:var(--text) }
+.logo-big span     { color:var(--accent) }
+.admin-login-box p { font-size:1.4rem;color:var(--text2);margin-bottom:24px }
+.login-field       { text-align:left;margin-bottom:16px }
+.login-field label { display:block;font-size:1.3rem;font-weight:600;margin-bottom:6px;color:var(--text) }
+.login-field input { width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:1.4rem;font-family:inherit;outline:none;transition:border .2s;color:var(--text) }
+.login-field input:focus { border-color:var(--accent) }
+.login-erro        { font-size:1.3rem;color:var(--red);min-height:2rem;margin-bottom:8px }
+.btn-login-admin   { width:100%;background:var(--accent);color:#fff;padding:13px;font-size:1.5rem;font-weight:700;border-radius:8px;cursor:pointer;border:none;font-family:inherit;transition:background .2s }
+.btn-login-admin:hover { background:var(--vermelho-escuro) }
+
+/* ── LAYOUT ────────────────────────── */
+.admin-wrap  { display:flex;min-height:100vh }
+.sidebar     { width:240px;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto }
+.sb-logo     { padding:0 24px 20px;border-bottom:1px solid var(--border);margin-bottom:8px }
+.sb-logo .logo { font-family:'Oswald',sans-serif;font-size:2rem;font-weight:900;color:var(--text) }
+.sb-logo p   { font-size:1.2rem;color:var(--text2);margin-top:2px }
+.sb-label    { padding:6px 24px;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2) }
+.sb-item     { display:flex;align-items:center;gap:10px;padding:10px 24px;cursor:pointer;font-size:1.4rem;font-weight:500;color:var(--text2);transition:all .15s;border-left:3px solid transparent }
+.sb-item:hover  { background:var(--surface2);color:var(--text) }
+.sb-item.active { background:var(--accent-light);color:var(--accent);border-left-color:var(--accent) }
+.sb-icon     { font-size:1.6rem;width:20px;text-align:center }
+.a-content   { flex:1;padding:32px;background:var(--bg);min-height:100vh }
+.a-sec       { display:none }
+.a-sec.active { display:block }
+.pg-title    { font-family:'Oswald',sans-serif;font-size:2.8rem;font-weight:900;margin-bottom:4px;color:var(--text) }
+.pg-sub      { color:var(--text2);font-size:1.4rem;margin-bottom:28px }
+
+/* ── STATS ─────────────────────────── */
+.stats-grid  { display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px }
+.stat-card   { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px }
+.sc-label    { font-size:1.2rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px }
+.sc-val      { font-family:'Oswald',sans-serif;font-size:2.8rem;font-weight:900;color:var(--text) }
+.sc-change   { font-size:1.2rem;margin-top:4px }
+.up          { color:var(--green) }
+
+/* ── TABELAS ────────────────────────── */
+.table-card  { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:24px }
+.tc-head     { padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center }
+.tc-title    { font-weight:700;font-size:1.5rem;color:var(--text) }
+table        { width:100%;border-collapse:collapse }
+th           { padding:10px 20px;text-align:left;font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);background:var(--surface2) }
+td           { padding:13px 20px;font-size:1.4rem;border-top:1px solid var(--border);color:var(--text) }
+tr:hover td  { background:var(--surface2) }
+
+/* ── FORMULÁRIOS ────────────────────── */
+.form-panel  { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px }
+.form-panel h4 { font-weight:700;font-size:1.6rem;margin-bottom:16px;color:var(--text) }
+.f3          { display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px }
+.f2          { display:grid;grid-template-columns:1fr 1fr;gap:12px }
+.icon-btn    { width:30px;height:30px;border-radius:6px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:1.3rem;display:flex;align-items:center;justify-content:center;transition:all .15s }
+.icon-btn:hover       { background:var(--surface2) }
+.icon-btn.danger:hover { background:var(--red-light);border-color:var(--red) }
+
+/* ── PRODUTOS ───────────────────────── */
+.prods-grid  { display:grid;grid-template-columns:repeat(3,1fr);gap:16px }
+.prod-card   { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden }
+.prod-card .pi { width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:4.8rem;background:var(--surface2) }
+.prod-body   { padding:14px }
+.prod-name   { font-weight:700;font-size:1.4rem;color:var(--text) }
+.prod-cat    { font-size:1.2rem;color:var(--text2);margin-top:2px }
+.prod-foot   { display:flex;justify-content:space-between;align-items:center;margin-top:10px }
+.prod-price  { font-family:'Oswald',sans-serif;font-size:1.8rem;font-weight:700;color:var(--accent) }
+.act-btns    { display:flex;gap:6px }
+
+/* ── FINANCEIRO ─────────────────────── */
+.chart-row    { display:flex;align-items:center;gap:12px;margin-bottom:10px }
+.cr-label     { font-size:1.3rem;width:150px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text) }
+.cr-bar-wrap  { flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden }
+.cr-bar       { height:100%;background:var(--accent);border-radius:4px;transition:width .6s }
+.cr-val       { font-size:1.2rem;font-weight:600;color:var(--text2);width:80px;text-align:right;flex-shrink:0 }
+.mo-chart     { display:flex;align-items:flex-end;gap:8px;height:140px;padding:8px 0 }
+.mo-bar-wrap  { flex:1;display:flex;flex-direction:column;align-items:center }
+.mo-bar       { width:100%;background:var(--accent);border-radius:4px 4px 0 0;min-height:4px;opacity:.6 }
+.mo-bar.curr  { opacity:1 }
+
+/* ── TOGGLE ─────────────────────────── */
+.toggle-wrap  { display:flex;align-items:center;gap:10px }
+.toggle       { position:relative;width:42px;height:24px }
+.toggle input { opacity:0;width:0;height:0 }
+.toggle-sl    { position:absolute;inset:0;background:var(--border);border-radius:12px;cursor:pointer;transition:.2s }
+.toggle-sl::before { content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s }
+.toggle input:checked + .toggle-sl { background:var(--green) }
+.toggle input:checked + .toggle-sl::before { transform:translateX(18px) }
+
+@media(max-width:900px){ .stats-grid{grid-template-columns:repeat(2,1fr)}.prods-grid{grid-template-columns:repeat(2,1fr)}.f3{grid-template-columns:1fr 1fr}.sidebar{display:none} }
+@media(max-width:600px){ .stats-grid{grid-template-columns:1fr}.prods-grid{grid-template-columns:1fr}.f2,.f3{grid-template-columns:1fr} }

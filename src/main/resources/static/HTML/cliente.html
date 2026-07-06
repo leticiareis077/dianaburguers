@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minha Conta — Diana Burguer's</title>
+  <link rel="shortcut icon" href="../IMG/icon.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../CSS/global.css">
+  <style>
+    /* ════════════════════════════════════
+       TELA DE LOGIN DO CLIENTE
+    ════════════════════════════════════ */
+    .cli-login-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      padding: 20px;
+    }
+    .cli-login-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 44px 40px;
+      width: 100%;
+      max-width: 460px;
+      box-shadow: var(--shadow-md);
+    }
+    .cli-logo {
+      font-family: 'Oswald', sans-serif;
+      font-size: 3rem; font-weight: 900;
+      color: var(--text); text-align: center;
+      margin-bottom: 6px;
+    }
+    .cli-logo span { color: var(--vermelho); }
+    .cli-logo-sub {
+      text-align: center; font-size: 1.35rem;
+      color: var(--text2); margin-bottom: 32px;
+    }
+
+    /* Tabs login/cadastro */
+    .auth-tabs {
+      display: flex; border-bottom: 2px solid var(--border);
+      margin-bottom: 28px;
+    }
+    .auth-tab {
+      flex: 1; padding: 12px; text-align: center;
+      font-size: 1.4rem; font-weight: 600; cursor: pointer;
+      color: var(--text2); border-bottom: 2px solid transparent;
+      margin-bottom: -2px; transition: all .2s;
+    }
+    .auth-tab.active { color: var(--vermelho); border-bottom-color: var(--vermelho); }
+
+    .auth-view { display: none; }
+    .auth-view.active { display: block; }
+
+    .cli-field { margin-bottom: 16px; }
+    .cli-field label {
+      display: block; font-size: 1.2rem; font-weight: 600;
+      color: var(--text2); text-transform: uppercase;
+      letter-spacing: .5px; margin-bottom: 6px;
+    }
+    .cli-field input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 1.4rem; font-family: inherit;
+      background: var(--surface2); color: var(--text); outline: none;
+      transition: border-color .2s;
+    }
+    .cli-field input:focus { border-color: var(--vermelho); }
+
+    .cli-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .btn-cli-login {
+      width: 100%; padding: 14px; margin-top: 8px;
+      background: var(--vermelho); color: #fff;
+      border: none; border-radius: 10px; cursor: pointer;
+      font-size: 1.5rem; font-weight: 700; font-family: inherit;
+      transition: background .2s;
+    }
+    .btn-cli-login:hover { background: var(--vermelho-escuro); }
+
+    .cli-erro {
+      color: var(--red); font-size: 1.3rem;
+      text-align: center; margin-top: 10px; min-height: 20px;
+    }
+
+    .cli-back {
+      display: block; text-align: center; margin-top: 24px;
+      font-size: 1.3rem; color: var(--text2); text-decoration: none;
+      transition: color .2s;
+    }
+    .cli-back:hover { color: var(--text); }
+
+    /* ════════════════════════════════════
+       PAINEL DO CLIENTE
+    ════════════════════════════════════ */
+    #tela-painel { display: none; }
+
+    /* NAVBAR */
+    .cli-navbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(1,1,3,.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; height: 60px;
+    }
+    body.light-theme .cli-navbar { background: rgba(245,245,243,.92); }
+    .cli-nav-brand {
+      font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 700;
+      color: var(--text); display: flex; align-items: center; gap: 8px;
+    }
+    .cli-nav-brand span { color: var(--vermelho); }
+    .cli-nav-right { display: flex; align-items: center; gap: 10px; }
+    .cli-nav-user {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 1.35rem; color: var(--text2);
+    }
+    .cli-avatar-sm {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--vermelho), var(--laranja));
+      color: #fff; font-family: 'Oswald', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; flex-shrink: 0;
+    }
+    .cli-avatar-sm img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* CAPA */
+    .profile-cover {
+      height: 180px;
+      background: linear-gradient(135deg, #D62828 0%, #a01e1e 50%, #4a0a0a 100%);
+      position: relative; overflow: hidden;
+    }
+    .profile-cover-pattern {
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(255,255,255,.07) 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size: 30px 30px, 50px 50px;
+    }
+    .profile-cover-emoji {
+      position: absolute; right: 60px; bottom: -10px;
+      font-size: 11rem; opacity: .12; user-select: none;
+      line-height: 1; pointer-events: none;
+    }
+
+    /* HERO */
+    .profile-hero {
+      max-width: 980px; margin: 0 auto; padding: 0 32px;
+    }
+    .profile-info-row {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; padding: 14px 0 22px;
+    }
+    .profile-left { display: flex; align-items: flex-end; gap: 18px; }
+    .profile-avatar-wrap { position: relative; display: inline-block; margin-top: -56px; }
+    .profile-avatar {
+      width: 110px; height: 110px; border-radius: 50%;
+      border: 4px solid var(--bg);
+      background: linear-gradient(135deg, var(--vermelho), var(--laranja));
+      color: #fff; font-family: 'Oswald', sans-serif;
+      font-size: 3.8rem; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative; cursor: pointer;
+      transition: box-shadow .2s; flex-shrink: 0;
+    }
+    .profile-avatar:hover { box-shadow: 0 0 0 3px var(--vermelho); }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-edit-overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,.55);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .2s; font-size: 2.2rem; color: #fff;
+      pointer-events: none;
+    }
+    .profile-avatar:hover .avatar-edit-overlay { opacity: 1; }
+    #avatar-file-input { display: none; }
+
+    .profile-name-block { padding-bottom: 10px; }
+    .pname { font-family: 'Oswald', sans-serif; font-size: 2.8rem; font-weight: 900; color: var(--text); }
+    .pemail { color: var(--text2); font-size: 1.35rem; margin-top: 3px; }
+    .profile-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .prole {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--accent-light); color: var(--accent);
+      border: 1px solid rgba(214,40,40,.3); border-radius: 20px;
+      padding: 3px 12px; font-size: 1.1rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+    }
+    .member-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(247,127,0,0.15); color: var(--laranja);
+      border: 1px solid rgba(247,127,0,0.3); border-radius: 20px;
+      padding: 3px 12px; font-size: 1.1rem; font-weight: 700;
+    }
+    .profile-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* TABS */
+    .profile-tabs-wrap {
+      max-width: 980px; margin: 0 auto; padding: 0 32px;
+      border-bottom: 2px solid var(--border);
+    }
+    .profile-tabs { display: flex; overflow-x: auto; scrollbar-width: none; }
+    .profile-tabs::-webkit-scrollbar { display: none; }
+    .ptab2 {
+      padding: 14px 22px; font-size: 1.35rem; font-weight: 600; cursor: pointer;
+      color: var(--text2); border-bottom: 2px solid transparent; margin-bottom: -2px;
+      white-space: nowrap; transition: all .2s; display: flex; align-items: center; gap: 6px;
+    }
+    .ptab2:hover { color: var(--text); }
+    .ptab2.active { color: var(--vermelho); border-bottom-color: var(--vermelho); }
+
+    /* CONTEÚDO */
+    .profile-content { max-width: 980px; margin: 0 auto; padding: 32px 32px 60px; }
+    .ptab2-sec { display: none; }
+    .ptab2-sec.active { display: block; }
+
+    /* CARDS */
+    .pcard {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+    }
+    .pcard-title {
+      font-size: 1.6rem; font-weight: 700; color: var(--text);
+      margin-bottom: 5px; display: flex; align-items: center; gap: 8px;
+    }
+    .pcard-hint { font-size: 1.2rem; color: var(--text2); margin-bottom: 20px; line-height: 1.6; }
+
+    /* STATS */
+    .client-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+      margin-bottom: 28px;
+    }
+    .cstat {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px; text-align: center;
+      transition: box-shadow .2s;
+    }
+    .cstat:hover { box-shadow: var(--shadow); }
+    .cstat-num {
+      font-family: 'Oswald', sans-serif; font-size: 2.8rem; font-weight: 900;
+      color: var(--vermelho);
+    }
+    .cstat-green .cstat-num { color: var(--green); }
+    .cstat-orange .cstat-num { color: var(--laranja); }
+    .cstat-label { font-size: 1.2rem; color: var(--text2); margin-top: 4px; }
+
+    /* FILTROS */
+    .ord-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .ord-filter-btn {
+      padding: 7px 16px; border-radius: 20px; font-size: 1.25rem; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border);
+      background: transparent; color: var(--text2); transition: all .2s;
+    }
+    .ord-filter-btn.active,
+    .ord-filter-btn:hover { background: var(--vermelho); color: #fff; border-color: var(--vermelho); }
+
+    /* CARD DE PEDIDO */
+    .ord2-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden; margin-bottom: 16px;
+      transition: box-shadow .2s;
+    }
+    .ord2-item:hover { box-shadow: var(--shadow); }
+    .ord2-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      flex-wrap: wrap; gap: 8px;
+    }
+    .ord2-id { font-weight: 700; font-size: 1.5rem; color: var(--text); }
+    .ord2-date { font-size: 1.2rem; color: var(--text2); }
+    .ord2-body { padding: 16px 20px; }
+    .ord2-products { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .ord2-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 4px 10px; font-size: 1.25rem; color: var(--text);
+    }
+    .ord2-meta {
+      display: flex; flex-wrap: wrap; gap: 16px;
+      font-size: 1.25rem; color: var(--text2); margin-bottom: 14px;
+    }
+    .ord2-footer {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    }
+    .ord2-total {
+      font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 700; color: var(--vermelho);
+    }
+    .ord2-actions { display: flex; gap: 8px; }
+
+    /* TRACKER */
+    .ord2-tracker {
+      display: flex; align-items: center;
+      background: var(--surface2); padding: 14px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .tracker-step { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+    .tracker-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--surface); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; transition: all .3s;
+    }
+    .tracker-dot.done   { background: var(--green); border-color: var(--green); color: #fff; font-size: 1.3rem; }
+    .tracker-dot.active { background: var(--laranja); border-color: var(--laranja); color: #fff; box-shadow: 0 0 10px rgba(247,127,0,.35); }
+    .tracker-label { font-size: 1.05rem; color: var(--text2); text-align: center; white-space: nowrap; }
+    .tracker-label.done   { color: var(--green); }
+    .tracker-label.active { color: var(--laranja); font-weight: 700; }
+    .tracker-line { flex: 1; height: 2px; background: var(--border); margin: 0 4px; margin-bottom: 20px; }
+    .tracker-line.done { background: var(--green); }
+
+    /* STATUS BADGE */
+    .sbadge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 20px; font-size: 1.2rem; font-weight: 700;
+    }
+    .sbadge.pending { background: #fff8e1; color: #c88000; }
+    .sbadge.transit { background: rgba(247,127,0,0.15); color: var(--laranja); }
+    .sbadge.done    { background: var(--green-light); color: var(--green); }
+    .sbadge.cancel  { background: var(--red-light); color: var(--red); }
+
+    /* ESTADO VAZIO */
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text2); }
+    .empty-state .big-icon { font-size: 5rem; margin-bottom: 16px; }
+    .empty-state p { font-size: 1.5rem; margin-bottom: 20px; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.65); backdrop-filter: blur(4px);
+      z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px;
+      width: 100%; max-width: 520px; max-height: 85vh; overflow-y: auto;
+    }
+    .modal-title { font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+    .modal-footer { display: flex; gap: 10px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .ord-detail-line {
+      display: flex; justify-content: space-between;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 1.35rem; color: var(--text);
+    }
+    .ord-detail-line:last-child { border-bottom: none; }
+    .ord-detail-total {
+      display: flex; justify-content: space-between; font-weight: 700;
+      font-size: 1.6rem; padding: 12px 0 0; color: var(--text);
+    }
+    .ord-detail-total span:last-child { color: var(--vermelho); font-family: 'Oswald', sans-serif; font-size: 2rem; }
+
+    /* FOTO */
+    .avatar-upload-area {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 32px; text-align: center; cursor: pointer;
+      transition: all .2s; margin-bottom: 20px;
+    }
+    .avatar-upload-area:hover,
+    .avatar-upload-area.drag-over { border-color: var(--vermelho); background: var(--accent-light); }
+    .avatar-upload-area .upload-icon { font-size: 3.6rem; margin-bottom: 12px; }
+    .avatar-upload-area p { font-size: 1.3rem; color: var(--text2); line-height: 1.6; }
+    .avatar-upload-area strong { color: var(--vermelho); }
+    .avatar-preview-strip {
+      display: flex; align-items: center; gap: 16px; padding: 16px;
+      background: var(--surface2); border-radius: 10px; margin-bottom: 16px;
+    }
+    .avatar-preview-img {
+      width: 72px; height: 72px; border-radius: 50%;
+      object-fit: cover; border: 3px solid var(--vermelho); flex-shrink: 0;
+    }
+    .avatar-preview-info strong { display: block; font-size: 1.4rem; font-weight: 700; color: var(--text); }
+    .avatar-preview-info p { font-size: 1.2rem; color: var(--text2); margin-top: 2px; }
+
+    /* SENHA */
+    .pass-strength-bar { height: 4px; border-radius: 4px; background: var(--border); margin-top: 8px; overflow: hidden; }
+    .pass-strength-fill { height: 100%; width: 0; transition: width .3s, background .3s; border-radius: 4px; }
+    .pass-strength-label { font-size: 1.1rem; color: var(--text2); margin-top: 4px; }
+
+    /* MAPA */
+    .addr-map-preview { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 20px; }
+
+    /* FAVORITOS */
+    .fav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+    .fav-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all .2s; }
+    .fav-card:hover { box-shadow: var(--shadow); border-color: rgba(214,40,40,.3); }
+    .fav-card-emoji { height: 80px; display: flex; align-items: center; justify-content: center; font-size: 3.8rem; background: var(--surface); }
+    .fav-card-body { padding: 12px; }
+    .fav-card-name { font-weight: 700; font-size: 1.35rem; margin-bottom: 4px; color: var(--text); }
+    .fav-card-price { font-family: 'Oswald', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--vermelho); }
+    .fav-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 6px; }
+    .fav-add-btn { flex: 1; background: var(--vermelho); color: #fff; border: none; border-radius: 6px; padding: 6px 10px; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: background .2s; }
+    .fav-add-btn:hover { background: var(--vermelho-escuro); }
+    .unfav-btn { background: transparent; border: none; color: #e05555; cursor: pointer; font-size: 1.6rem; transition: transform .2s; flex-shrink: 0; }
+    .unfav-btn:hover { transform: scale(1.3); }
+
+    /* FORM */
+    .form-group  { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 1.2rem; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .form-group input,
+    .form-group select { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 1.4rem; font-family: inherit; background: var(--surface2); color: var(--text); outline: none; transition: border-color .2s; }
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--vermelho); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* TOAST */
+    .toast-cli {
+      position: fixed; bottom: 28px; right: 28px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 20px;
+      font-size: 1.35rem; color: var(--text); box-shadow: var(--shadow-md);
+      transform: translateY(20px); opacity: 0; transition: all .25s; z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-cli.show { transform: translateY(0); opacity: 1; }
+
+    /* RESPONSIVO */
+    @media(max-width: 700px) {
+      .cli-login-box { padding: 32px 24px; }
+      .client-stats { grid-template-columns: 1fr 1fr; }
+      .profile-left { flex-direction: column; align-items: flex-start; }
+      .profile-cover-emoji { display: none; }
+      .profile-hero { padding: 0 16px; }
+      .profile-tabs-wrap { padding: 0 16px; }
+      .profile-content { padding: 20px 16px 60px; }
+      .form-row { grid-template-columns: 1fr; }
+      .cli-navbar { padding: 0 16px; }
+      .cli-row { grid-template-columns: 1fr; }
+      .ord2-tracker { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="toast-cli" id="toast-cli"></div>
+
+<!-- ══════════════════════════════════════
+     TELA DE LOGIN / CADASTRO
+══════════════════════════════════════ -->
+<div id="tela-login" class="cli-login-wrap">
+  <div class="cli-login-box">
+    <div class="cli-logo">Diana<span>Burguer's</span></div>
+    <div class="cli-logo-sub">Área do Cliente 🍔</div>
+
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="switchAuthTab('login', this)">Entrar</div>
+      <div class="auth-tab" onclick="switchAuthTab('reg', this)">Criar conta</div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="auth-view active" id="view-login">
+      <div class="cli-field">
+        <label>E-mail</label>
+        <input type="email" id="l-email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter') doLogin()">
+      </div>
+      <div class="cli-field">
+        <label>Senha</label>
+        <input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
+      </div>
+      <div class="cli-erro" id="l-erro"></div>
+      <button class="btn-cli-login" onclick="doLogin()">Entrar na minha conta</button>
+    </div>
+
+    <!-- CADASTRO -->
+    <div class="auth-view" id="view-reg">
+      <div class="cli-row">
+        <div class="cli-field"><label>Nome *</label><input type="text" id="r-name" placeholder="Seu nome"></div>
+        <div class="cli-field"><label>Sobrenome</label><input type="text" id="r-last" placeholder="Sobrenome"></div>
+      </div>
+      <div class="cli-field">
+        <label>E-mail *</label>
+        <input type="email" id="r-email" placeholder="seu@email.com">
+      </div>
+      <div class="cli-row">
+        <div class="cli-field"><label>Telefone / WhatsApp</label><input type="tel" id="r-phone" placeholder="(79) 9xxxx-xxxx" oninput="maskPhone(this)"></div>
+        <div class="cli-field"><label>CPF *</label><input type="text" id="r-cpf" placeholder="000.000.000-00" maxlength="14"></div>
+      </div>
+      <div class="cli-row">
+        <div class="cli-field"><label>Senha *</label><input type="password" id="r-pass" placeholder="mín. 6 caracteres"></div>
+        <div class="cli-field"><label>Confirmar senha *</label><input type="password" id="r-pass2" placeholder="repita a senha"></div>
+      </div>
+      <div class="cli-erro" id="r-erro"></div>
+      <button class="btn-cli-login" onclick="doReg()">Criar minha conta</button>
+    </div>
+
+    <a href="../principal.html" class="cli-back">← Voltar ao site</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAINEL DO CLIENTE
+══════════════════════════════════════ -->
+<div id="tela-painel">
+
+  <!-- NAVBAR -->
+  <nav class="cli-navbar">
+    <div class="cli-nav-brand">🍔 Diana <span>Burguer's</span></div>
+    <div class="cli-nav-right">
+      <div class="cli-nav-user">
+        <div class="cli-avatar-sm" id="nav-avatar-sm">
+          <img id="nav-avatar-img" src="" alt="" style="display:none">
+          <span id="nav-avatar-ini">?</span>
+        </div>
+        <span id="nav-nome">—</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="irSite()">← Ver site</button>
+      <button class="btn btn-danger btn-sm" onclick="sairConta()">Sair</button>
+    </div>
+  </nav>
+
+  <!-- CAPA -->
+  <div class="profile-cover">
+    <div class="profile-cover-pattern"></div>
+    <div class="profile-cover-emoji">🍔</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="profile-hero">
+    <div class="profile-info-row">
+      <div class="profile-left">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar" id="pav" onclick="document.getElementById('avatar-file-input').click()" title="Clique para trocar a foto">
+            <img id="pav-img" src="" alt="" style="display:none">
+            <span id="pav-ini">?</span>
+            <div class="avatar-edit-overlay">📷</div>
+          </div>
+          <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarUpload(event)">
+        </div>
+        <div class="profile-name-block">
+          <div class="pname" id="p-name-big">—</div>
+          <div class="pemail" id="p-email-big">—</div>
+          <div class="profile-badges">
+            <span class="prole">🍔 Cliente</span>
+            <span class="member-badge" id="p-member-badge">🆕 Novo</span>
+          </div>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn btn-ghost btn-sm" onclick="irSite()">← Ver site</button>
+        <button class="btn btn-danger btn-sm" onclick="sairConta()">Sair</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="profile-tabs-wrap">
+    <div class="profile-tabs">
+      <div class="ptab2 active" onclick="switchTab('orders', this)">📋 Meus Pedidos</div>
+      <div class="ptab2" onclick="switchTab('favs', this)">❤️ Favoritos</div>
+      <div class="ptab2" onclick="switchTab('addr', this)">📍 Endereço</div>
+      <div class="ptab2" onclick="switchTab('pay', this)">💳 Pagamento</div>
+      <div class="ptab2" onclick="switchTab('photo', this)">🖼️ Foto</div>
+      <div class="ptab2" onclick="switchTab('acct', this)">👤 Minha Conta</div>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <div class="profile-content">
+
+    <!-- FAVORITOS -->
+    <div class="ptab2-sec" id="tab-favs">
+      <div class="pcard">
+        <div class="pcard-title">❤️ Seus favoritos</div>
+        <div class="pcard-hint">Produtos que você favoritou no cardápio. Clique em <strong>+ Carrinho</strong> para pedir direto daqui.</div>
+        <div class="fav-grid" id="fav-grid"></div>
+      </div>
+    </div>
+
+    <!-- PEDIDOS -->
+    <div class="ptab2-sec active" id="tab-orders">
+      <div class="client-stats" id="client-stats"></div>
+      <div class="ord-filters">
+        <button class="ord-filter-btn active" onclick="filterOrds('all', this)">📋 Todos</button>
+        <button class="ord-filter-btn" onclick="filterOrds('pending', this)">🔥 Em preparo</button>
+        <button class="ord-filter-btn" onclick="filterOrds('transit', this)">🛵 Em entrega</button>
+        <button class="ord-filter-btn" onclick="filterOrds('done', this)">✅ Entregues</button>
+        <button class="ord-filter-btn" onclick="filterOrds('cancel', this)">❌ Cancelados</button>
+      </div>
+      <div id="order-hist"></div>
+    </div>
+
+    <!-- ENDEREÇO -->
+    <div class="ptab2-sec" id="tab-addr">
+      <div class="pcard">
+        <div class="pcard-title">📍 Endereço de entrega</div>
+        <div class="pcard-hint">Salvo automaticamente no checkout para agilizar seus pedidos. O CEP preenche os campos automaticamente.</div>
+        <div class="form-row">
+          <div class="form-group"><label>CEP</label><input id="a-cep" placeholder="49000-000" oninput="maskCep(this); buscaCep(this)"></div>
+          <div class="form-group"><label>Bairro</label><input id="a-bairro" placeholder="Centro"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Rua / Av.</label><input id="a-rua" placeholder="Rua das Flores"></div>
+          <div class="form-group"><label>Número</label><input id="a-num" placeholder="123"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Complemento</label><input id="a-comp" placeholder="Apto 45, Bloco B (opcional)"></div>
+          <div class="form-group"><label>Referência</label><input id="a-ref" placeholder="Próximo ao mercado X (opcional)"></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveAddr()">💾 Salvar endereço</button>
+      </div>
+      <div class="pcard" id="addr-map-card" style="display:none">
+        <div class="pcard-title">🗺️ Prévia no mapa</div>
+        <div class="addr-map-preview">
+          <iframe id="addr-map-frame" width="100%" height="220" style="border:none" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGAMENTO -->
+    <div class="ptab2-sec" id="tab-pay">
+      <div class="pcard">
+        <div class="pcard-title">💳 Forma de pagamento preferida</div>
+        <div class="pcard-hint">Pré-selecionada no checkout. Você pode mudar na hora do pedido.</div>
+        <div class="form-group"><label>Método</label>
+          <select id="pay-method" onchange="togglePayFields()">
+            <option value="pix">🟡 PIX</option>
+            <option value="credito">💳 Cartão de Crédito</option>
+            <option value="debito">💳 Cartão de Débito</option>
+            <option value="dinheiro">💵 Dinheiro / Troco</option>
+          </select>
+        </div>
+        <div id="pix-f">
+          <div class="form-group"><label>Chave PIX</label><input id="pay-pix" placeholder="CPF, e-mail ou telefone"></div>
+        </div>
+        <div id="card-f" style="display:none">
+          <div class="form-group"><label>Nome no cartão</label><input id="pay-cn" placeholder="Como aparece no cartão"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Número</label><input id="pay-cnum" placeholder="•••• •••• •••• ••••" maxlength="19" oninput="maskCard(this)"></div>
+            <div class="form-group"><label>Validade</label><input id="pay-cexp" placeholder="MM/AA" maxlength="5" oninput="maskExp(this)"></div>
+          </div>
+          <div class="form-group"><label>Banco / Operadora</label><input id="pay-cbank" placeholder="Ex: Nubank, Bradesco"></div>
+        </div>
+        <button class="btn btn-primary" onclick="savePay()">💾 Salvar dados</button>
+      </div>
+    </div>
+
+    <!-- FOTO -->
+    <div class="ptab2-sec" id="tab-photo">
+      <div class="pcard">
+        <div class="pcard-title">🖼️ Foto de perfil</div>
+        <div class="pcard-hint">Sua foto aparece no header e na área de perfil. Tamanho máximo: 5 MB.</div>
+        <div id="avatar-preview-strip" style="display:none" class="avatar-preview-strip">
+          <img id="avatar-strip-img" class="avatar-preview-img" src="" alt="">
+          <div class="avatar-preview-info">
+            <strong id="avatar-strip-name">—</strong>
+            <p>Foto salva com sucesso ✅</p>
+          </div>
+          <button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="removeAvatar()">🗑️ Remover</button>
+        </div>
+        <div class="avatar-upload-area" id="avatar-drop-zone"
+             onclick="document.getElementById('avatar-file-input').click()"
+             ondragover="avatarDragOver(event)"
+             ondragleave="avatarDragLeave(event)"
+             ondrop="avatarDrop(event)">
+          <div class="upload-icon">📷</div>
+          <p><strong>Clique aqui</strong> ou arraste sua foto</p>
+          <p style="margin-top:6px;font-size:1.1rem">JPG · PNG · WEBP &nbsp;·&nbsp; máx. 5 MB</p>
+        </div>
+        <p style="font-size:1.2rem;color:var(--text2)">💡 A foto é armazenada localmente neste navegador.</p>
+      </div>
+    </div>
+
+    <!-- MINHA CONTA -->
+    <div class="ptab2-sec" id="tab-acct">
+      <div class="pcard">
+        <div class="pcard-title">👤 Informações pessoais</div>
+        <div class="form-row">
+          <div class="form-group"><label>Nome</label><input id="ac-name"></div>
+          <div class="form-group"><label>Sobrenome</label><input id="ac-last"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>E-mail (não editável)</label><input id="ac-email" disabled style="opacity:.5;cursor:not-allowed"></div>
+          <div class="form-group"><label>Telefone / WhatsApp</label><input id="ac-phone" placeholder="(79) 9xxxx-xxxx" oninput="maskPhone(this)"></div>
+        </div>
+        <div class="form-group"><label>Data de nascimento</label><input type="date" id="ac-birth"></div>
+        <button class="btn btn-primary" onclick="saveAcct()">💾 Salvar informações</button>
+      </div>
+      <div class="pcard">
+        <div class="pcard-title">🔒 Alterar senha</div>
+        <div class="pcard-hint">Use uma senha forte com letras, números e símbolos.</div>
+        <div class="form-row">
+          <div class="form-group"><label>Nova senha</label><input type="password" id="ac-p1" placeholder="mín. 6 caracteres"></div>
+          <div class="form-group"><label>Confirmar senha</label><input type="password" id="ac-p2" placeholder="repita a senha"></div>
+        </div>
+        <div class="pass-strength-bar"><div class="pass-strength-fill" id="pass-fill"></div></div>
+        <div class="pass-strength-label" id="pass-label"></div>
+        <br>
+        <button class="btn btn-ghost" onclick="chgPass()">🔒 Alterar senha</button>
+      </div>
+      <div class="pcard" style="border-color:var(--red);background:var(--red-light)">
+        <div class="pcard-title" style="color:var(--red)">⚠️ Zona de perigo</div>
+        <div class="pcard-hint">Ao sair, você precisará fazer login novamente.</div>
+        <button class="btn btn-danger" onclick="sairConta()">Sair da conta</button>
+      </div>
+    </div>
+
+  </div><!-- /profile-content -->
+</div><!-- /tela-painel -->
+
+<!-- MODAL DETALHES DO PEDIDO -->
+<div class="modal-overlay" id="ord-detail-modal">
+  <div class="modal">
+    <div class="modal-title">🧾 Detalhes do Pedido</div>
+    <div id="ord-detail-content"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" style="flex:1" onclick="document.getElementById('ord-detail-modal').classList.remove('open')">Fechar</button>
+      <button class="btn btn-primary" style="flex:1" id="ord-repeat-btn">🔄 Repetir pedido</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  DADOS — sincronizados com o site principal
+//  via sessionStorage
+// ══════════════════════════════════════════
+
+// DB compartilhado (mesmos produtos do principal)
+const DB_PRODUCTS = [
+  { id:1,  name:'X-Bacon',             cat:'Hambúrgueres', price:19.00, emoji:'🍔' },
+  { id:2,  name:'Artesanal Bacon',     cat:'Hambúrgueres', price:28.00, emoji:'🍔' },
+  { id:3,  name:'Bacon Duplo',         cat:'Hambúrgueres', price:33.00, emoji:'🍔' },
+  { id:4,  name:'Bacon Crispy',        cat:'Hambúrgueres', price:24.00, emoji:'🍔' },
+  { id:5,  name:'Bacon Smash',         cat:'Hambúrgueres', price:26.00, emoji:'🍔' },
+  { id:6,  name:'X-Frango',            cat:'Hambúrgueres', price:17.00, emoji:'🍗' },
+  { id:7,  name:'Frango Cheddar',      cat:'Hambúrgueres', price:21.00, emoji:'🍗' },
+  { id:8,  name:'Frango Barbecue',     cat:'Hambúrgueres', price:23.00, emoji:'🍗' },
+  { id:9,  name:'Frango Parmegiana',   cat:'Hambúrgueres', price:25.00, emoji:'🍗' },
+  { id:10, name:'Frango Catupiry',     cat:'Hambúrgueres', price:24.00, emoji:'🍗' },
+  { id:11, name:'X-Calabresa',         cat:'Hambúrgueres', price:20.00, emoji:'🍔' },
+  { id:16, name:'X-Burger',            cat:'Hambúrgueres', price:12.00, emoji:'🍔' },
+  { id:20, name:'Veggie Burger',       cat:'Hambúrgueres', price:22.00, emoji:'🥗' },
+  { id:21, name:'Pizza Calabresa',     cat:'Pizzas',       price:45.00, emoji:'🍕' },
+  { id:22, name:'Pizza Marguerita',    cat:'Pizzas',       price:42.00, emoji:'🍕' },
+  { id:28, name:'Coca-Cola',           cat:'Bebidas',      price:8.00,  emoji:'🥤' },
+  { id:29, name:'Guaraná Antarctica',  cat:'Bebidas',      price:7.00,  emoji:'🥤' },
+  { id:32, name:'Suco de Laranja',     cat:'Bebidas',      price:9.00,  emoji:'🍊' },
+  { id:33, name:'Suco de Morango',     cat:'Bebidas',      price:10.00, emoji:'🍓' },
+];
+
+// Usuário atual — carregado do sessionStorage
+let CU = null;
+// Base da API — o backend roda com context-path /DianaBurgers
+const API_BASE = '/DianaBurgers';
+
+// Pedidos do usuário — carregados da API
+let ORDERS = [];
+// Carrinho para "repetir pedido"
+let cart = [];
+
+// ══════════════════════════════════════════
+//  INICIALIZAÇÃO
+// ══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', async () => {
+  // Carrega sessão salva pelo principal.html
+  const sess = sessionStorage.getItem('diana_cliente_session');
+  if (sess) {
+    try {
+      CU = JSON.parse(sess);
+      await carregarPedidos();
+      abrirPainel();
+    } catch (e) { console.error(e); sessaoInvalida(); }
+  }
+
+  // Força senha
+  const p1 = document.getElementById('ac-p1');
+  if (p1) p1.addEventListener('input', checkPassStrength);
+});
+
+// Mapeia o status do backend (texto livre) para as chaves usadas no front.
+function mapStatusPedido(status) {
+  const s = (status || '').toLowerCase();
+  if (s.includes('entreg')) return 'done';
+  if (s.includes('caminho') || s.includes('entrega') || s.includes('transit')) return 'transit';
+  if (s.includes('cancel')) return 'cancel';
+  return 'pending';
+}
+
+// Busca os pedidos reais do usuário logado (e os itens de cada um) na API.
+async function carregarPedidos() {
+  if (!CU || !CU.id) { ORDERS = []; return; }
+  try {
+    const resPedidos = await fetch(`${API_BASE}/pedido?idUsuario=${CU.id}`, { cache: 'no-store' });
+    if (!resPedidos.ok) throw new Error('Falha ao buscar pedidos');
+    const pedidos = await resPedidos.json();
+
+    ORDERS = await Promise.all(pedidos.map(async (p) => {
+      let itens = [];
+      try {
+        const resItens = await fetch(`${API_BASE}/itens?idPedido=${p.idPedido}`, { cache: 'no-store' });
+        if (resItens.ok) itens = await resItens.json();
+      } catch (e) { console.error(e); }
+
+      return {
+        id: p.idPedido,
+        date: p.dataPedido ? new Date(p.dataPedido).toLocaleString('pt-BR') : '',
+        status: mapStatusPedido(p.status),
+        payment: p.formaPag,
+        delivery: p.tipoEntrega || 'retirada',
+        address: p.enderecoEntregaTexto || (p.tipoEntrega === 'retirada' ? 'Retirada no local' : '—'),
+        obs: p.observacao || '',
+        total: Number(p.valorTotal) || 0,
+        items: itens.map(i => {
+          const prod = DB_PRODUCTS.find(dp => dp.name === i.nomeProduto);
+          return { id: i.idProduto, name: i.nomeProduto, qty: i.quantidade, price: Number(i.precoUnit), emoji: prod?.emoji || '🍔' };
+        }),
+      };
+    }));
+    // Mais recentes primeiro
+    ORDERS.sort((a, b) => b.id - a.id);
+  } catch (e) {
+    console.error('Não foi possível carregar os pedidos da API:', e);
+    ORDERS = [];
+  }
+}
+
+function sessaoInvalida() {
+  sessionStorage.removeItem('diana_cliente_session');
+  document.getElementById('tela-login').style.display = 'flex';
+  document.getElementById('tela-painel').style.display = 'none';
+}
+
+function abrirPainel() {
+  document.getElementById('tela-login').style.display = 'none';
+  document.getElementById('tela-painel').style.display = 'block';
+  renderPainel();
+}
+
+// ══════════════════════════════════════════
+//  AUTH — login e cadastro próprios desta página
+// ══════════════════════════════════════════
+
+// Usuários cadastrados ficam no localStorage para persistir entre abas
+function getUsers() {
+  try { return JSON.parse(localStorage.getItem('diana_users') || '[]'); } catch { return []; }
+}
+function saveUsers(list) {
+  localStorage.setItem('diana_users', JSON.stringify(list));
+}
+
+function switchAuthTab(tab, el) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.auth-view').forEach(v => v.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('view-' + tab).classList.add('active');
+  document.getElementById('l-erro').textContent = '';
+  document.getElementById('r-erro').textContent = '';
+}
+
+async function doLogin() {
+  const email = document.getElementById('l-email').value.trim().toLowerCase();
+  const pass  = document.getElementById('l-pass').value;
+  const erro  = document.getElementById('l-erro');
+  if (!email || !pass) { erro.textContent = '⚠️ Preencha e-mail e senha.'; return; }
+
+  try {
+    const res = await fetch(`${API_BASE}/usuario/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha: pass })
+    });
+    if (!res.ok) { erro.textContent = '❌ E-mail ou senha incorretos.'; return; }
+
+    const usuario = await res.json();
+    if (usuario.role === 'admin' || usuario.role === 'funcionario') {
+      erro.textContent = '⚠️ Use o painel administrativo.'; return;
+    }
+
+    CU = usuarioParaCU(usuario);
+    await carregarPedidos();
+    sessionStorage.setItem('diana_cliente_session', JSON.stringify(CU));
+    abrirPainel();
+  } catch (e) {
+    console.error(e);
+    erro.textContent = '❌ Não foi possível conectar ao servidor.';
+  }
+}
+
+// Converte o UsuarioDTO retornado pela API para o formato que o front usa (CU).
+function usuarioParaCU(usuario) {
+  const partesNome = (usuario.nome || '').trim().split(' ');
+  return {
+    id:      usuario.id,
+    name:    partesNome[0] || usuario.nome || '',
+    last:    partesNome.slice(1).join(' '),
+    email:   usuario.email,
+    phone:   usuario.telefone,
+    cpf:     usuario.cpf,
+    role:    usuario.role || 'cliente',
+    address: {},
+    payment: {},
+  };
+}
+
+function onlyDigits(str) { return (str || '').replace(/\D/g, ''); }
+
+async function doReg() {
+  const name  = document.getElementById('r-name').value.trim();
+  const last  = document.getElementById('r-last').value.trim();
+  const email = document.getElementById('r-email').value.trim().toLowerCase();
+  const phone = onlyDigits(document.getElementById('r-phone').value);
+  const cpf   = onlyDigits(document.getElementById('r-cpf').value);
+  const pass  = document.getElementById('r-pass').value;
+  const pass2 = document.getElementById('r-pass2').value;
+  const erro  = document.getElementById('r-erro');
+
+  if (!name || !email || !pass)  { erro.textContent = '⚠️ Preencha os campos obrigatórios.'; return; }
+  if (!cpf || cpf.length !== 11) { erro.textContent = '⚠️ Informe um CPF válido (11 dígitos).'; return; }
+  if (!phone)                    { erro.textContent = '⚠️ Informe um telefone.'; return; }
+  if (pass.length < 6)           { erro.textContent = '⚠️ Senha mínima de 6 caracteres.'; return; }
+  if (pass !== pass2)            { erro.textContent = '⚠️ As senhas não coincidem.'; return; }
+
+  try {
+    const res = await fetch(`${API_BASE}/usuario`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nome: last ? `${name} ${last}` : name,
+        email, cpf, telefone: phone,
+        senhaUsuario: pass,
+      })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => null);
+      erro.textContent = '⚠️ ' + (err?.message || 'Não foi possível criar a conta.');
+      return;
+    }
+    const usuario = await res.json();
+    CU = usuarioParaCU(usuario);
+    ORDERS = [];
+    sessionStorage.setItem('diana_cliente_session', JSON.stringify(CU));
+    abrirPainel();
+    toast('🎉 Conta criada! Bem-vindo(a), ' + CU.name + '!');
+  } catch (e) {
+    console.error(e);
+    erro.textContent = '❌ Não foi possível conectar ao servidor.';
+  }
+}
+
+function sairConta() {
+  sessionStorage.removeItem('diana_cliente_session');
+  sessionStorage.removeItem('diana_cliente_orders');
+  CU = null; ORDERS = [];
+  document.getElementById('tela-painel').style.display = 'none';
+  document.getElementById('tela-login').style.display = 'flex';
+  document.getElementById('l-email').value = '';
+  document.getElementById('l-pass').value  = '';
+  document.getElementById('l-erro').textContent = '';
+  toast('👋 Até logo!');
+}
+
+function irSite() { window.location.href = '../principal.html'; }
+
+// ══════════════════════════════════════════
+//  PAINEL — render geral
+// ══════════════════════════════════════════
+function renderPainel() {
+  const ini = (CU.name[0] + (CU.last ? CU.last[0] : CU.name[1] || '')).toUpperCase();
+
+  // Navbar topo
+  document.getElementById('nav-nome').textContent = CU.name;
+  document.getElementById('nav-avatar-ini').textContent = ini;
+  loadAvatarNav();
+
+  // Hero
+  document.getElementById('p-name-big').textContent  = CU.name + ' ' + (CU.last || '');
+  document.getElementById('p-email-big').textContent = CU.email;
+  document.getElementById('pav-ini').textContent     = ini;
+  loadAvatarHero();
+
+  // Badge membro
+  const done = ORDERS.filter(o => o.status === 'done').length;
+  const mb = document.getElementById('p-member-badge');
+  if (done >= 10) mb.textContent = '🏆 VIP';
+  else if (done >= 5) mb.textContent = '⭐ Fiel';
+  else mb.textContent = '🆕 Novo';
+
+  // Campos das abas
+  document.getElementById('ac-name').value  = CU.name  || '';
+  document.getElementById('ac-last').value  = CU.last  || '';
+  document.getElementById('ac-email').value = CU.email || '';
+  document.getElementById('ac-phone').value = CU.phone || '';
+  if (document.getElementById('ac-birth')) document.getElementById('ac-birth').value = CU.birth || '';
+
+  const a = CU.address || {};
+  document.getElementById('a-cep').value    = a.cep    || '';
+  document.getElementById('a-bairro').value = a.bairro || '';
+  document.getElementById('a-rua').value    = a.rua    || '';
+  document.getElementById('a-num').value    = a.num    || '';
+  document.getElementById('a-comp').value   = a.comp   || '';
+  document.getElementById('a-ref').value    = a.ref    || '';
+  if (a.rua && a.num) showAddrMap(a);
+
+  const py = CU.payment || {};
+  document.getElementById('pay-method').value = py.method   || 'pix';
+  document.getElementById('pay-pix').value    = py.pixKey   || '';
+  document.getElementById('pay-cn').value     = py.cardName || '';
+  document.getElementById('pay-cnum').value   = py.cardNum  || '';
+  document.getElementById('pay-cexp').value   = py.cardExp  || '';
+  document.getElementById('pay-cbank').value  = py.cardBank || '';
+  togglePayFields();
+
+  renderStats();
+  renderOrderHist();
+}
+
+// ── STATS ──
+function renderStats() {
+  const done  = ORDERS.filter(o => o.status === 'done');
+  const total = done.reduce((s, o) => s + o.total, 0);
+  const avg   = done.length ? total / done.length : 0;
+  document.getElementById('client-stats').innerHTML = `
+    <div class="cstat"><div class="cstat-num">${ORDERS.length}</div><div class="cstat-label">Total de pedidos</div></div>
+    <div class="cstat cstat-green"><div class="cstat-num">${done.length}</div><div class="cstat-label">Entregues</div></div>
+    <div class="cstat"><div class="cstat-num">R$${total.toFixed(0)}</div><div class="cstat-label">Total gasto</div></div>
+    <div class="cstat cstat-orange"><div class="cstat-num">R$${avg.toFixed(0)}</div><div class="cstat-label">Ticket médio</div></div>
+  `;
+}
+
+// ── HISTÓRICO ──
+let _filter = 'all';
+function filterOrds(status, el) {
+  _filter = status;
+  document.querySelectorAll('.ord-filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderOrderHist();
+}
+
+function renderOrderHist() {
+  const el = document.getElementById('order-hist');
+  let ords = [...ORDERS];
+  if (_filter !== 'all') ords = ords.filter(o => o.status === _filter);
+
+  if (!ords.length) {
+    el.innerHTML = `<div class="empty-state">
+      <div class="big-icon">${_filter === 'all' ? '📋' : '🔍'}</div>
+      <p>${_filter === 'all' ? 'Você ainda não fez nenhum pedido.' : 'Nenhum pedido nessa categoria.'}</p>
+      <button class="btn btn-primary" onclick="irSite()">Ver cardápio</button>
+    </div>`;
+    return;
+  }
+
+  const slbl = { pending:'🔥 Em preparo', transit:'🛵 Em entrega', done:'✅ Entregue', cancel:'❌ Cancelado' };
+  el.innerHTML = ords.map(o => `
+    <div class="ord2-item">
+      <div class="ord2-header">
+        <div>
+          <div class="ord2-id">Pedido #${o.id}</div>
+          <div class="ord2-date">${o.date}</div>
+        </div>
+        <span class="sbadge ${o.status}">${slbl[o.status] || o.status}</span>
+      </div>
+      ${(o.status === 'pending' || o.status === 'transit') ? buildTracker(o.status) : ''}
+      <div class="ord2-body">
+        <div class="ord2-products">
+          ${o.items.map(i => `<span class="ord2-tag">${i.emoji||'🍔'} ${i.qty}× ${i.name}</span>`).join('')}
+        </div>
+        <div class="ord2-meta">
+          <span>📍 ${o.address}</span>
+          <span>💳 ${o.payment}</span>
+          <span>🚚 ${o.delivery === 'delivery' ? 'Delivery' : 'Retirada'}</span>
+          ${o.obs ? `<span>📝 ${o.obs}</span>` : ''}
+        </div>
+        <div class="ord2-footer">
+          <div class="ord2-total">R$${o.total.toFixed(2).replace('.', ',')}</div>
+          <div class="ord2-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openOrdDetail(${o.id})">🧾 Detalhes</button>
+            <button class="btn btn-primary btn-sm" onclick="repeatOrder(${o.id})">🔄 Repetir</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function buildTracker(status) {
+  const steps = [
+    { icon:'✅', label:'Confirmado' },
+    { icon:'👨‍🍳', label:'Preparando' },
+    { icon:'🛵', label:'Saiu p/ entrega' },
+    { icon:'🏠', label:'Entregue' },
+  ];
+  const activeStep = status === 'pending' ? 1 : 2;
+  let html = '<div class="ord2-tracker">';
+  steps.forEach((s, i) => {
+    const done   = i < activeStep;
+    const active = i === activeStep;
+    html += `<div class="tracker-step">
+      <div class="tracker-dot ${done?'done':active?'active':''}">${done?'✓':s.icon}</div>
+      <div class="tracker-label ${done?'done':active?'active':''}">${s.label}</div>
+    </div>`;
+    if (i < steps.length - 1)
+      html += `<div class="tracker-line ${(done||active)?'done':''}"></div>`;
+  });
+  return html + '</div>';
+}
+
+function openOrdDetail(id) {
+  const o = ORDERS.find(x => x.id === id);
+  if (!o) return;
+  const slbl = { pending:'🔥 Em preparo', transit:'🛵 Em entrega', done:'✅ Entregue', cancel:'❌ Cancelado' };
+  document.getElementById('ord-detail-content').innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:16px;font-size:1.3rem;color:var(--text2)">
+      <span>${o.date}</span>
+      <span class="sbadge ${o.status}">${slbl[o.status]||o.status}</span>
+    </div>
+    <div>
+      ${o.items.map(i => `
+        <div class="ord-detail-line">
+          <span>${i.emoji||'🍔'} ${i.name} × ${i.qty}</span>
+          <span>R$${(i.price*i.qty).toFixed(2).replace('.',',')}</span>
+        </div>`).join('')}
+    </div>
+    <div class="ord-detail-total"><span>Total</span><span>R$${o.total.toFixed(2).replace('.',',')}</span></div>
+    <div style="margin-top:16px;font-size:1.3rem;color:var(--text2);display:flex;flex-direction:column;gap:6px">
+      <span>📍 ${o.address}</span>
+      <span>💳 ${o.payment}</span>
+      <span>🚚 ${o.delivery === 'delivery' ? 'Delivery' : 'Retirada'}</span>
+      ${o.obs ? `<span>📝 ${o.obs}</span>` : ''}
+    </div>`;
+  document.getElementById('ord-repeat-btn').onclick = () => {
+    repeatOrder(id);
+    document.getElementById('ord-detail-modal').classList.remove('open');
+  };
+  document.getElementById('ord-detail-modal').classList.add('open');
+}
+
+function repeatOrder(id) {
+  const o = ORDERS.find(x => x.id === id);
+  if (!o) return;
+  // Salva carrinho no sessionStorage para o principal.html pegar
+  const cartRepeat = o.items.map(i => ({ ...i }));
+  sessionStorage.setItem('diana_cart_repeat', JSON.stringify(cartRepeat));
+  toast('🔄 Indo para o cardápio com ' + o.items.length + ' item(ns) no carrinho...');
+  setTimeout(() => { window.location.href = '../principal.html?repeat=1'; }, 1200);
+}
+
+// ── TABS ──
+function switchTab(id, el) {
+  document.querySelectorAll('.ptab2').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.ptab2-sec').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+  if (id === 'photo') renderAvatarTab();
+  if (id === 'favs')  renderFavs();
+}
+
+// ── FAVORITOS ──
+function getFavs() {
+  try { return JSON.parse(localStorage.getItem('diana_favs') || '[]'); } catch { return []; }
+}
+
+function renderFavs() {
+  const grid   = document.getElementById('fav-grid');
+  const favIds = getFavs();
+  const prods  = DB_PRODUCTS.filter(p => favIds.includes(p.id));
+
+  if (!prods.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="big-icon">❤️</div>
+      <p>Nenhum favorito ainda.<br>Clique no ❤ nos produtos para salvar.</p>
+      <button class="btn btn-primary" onclick="irSite()">Ver cardápio</button>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = prods.map(p => `
+    <div class="fav-card" id="fav-card-${p.id}">
+      <div class="fav-card-emoji">${p.emoji}</div>
+      <div class="fav-card-body">
+        <div class="fav-card-name">${p.name}</div>
+        <div class="fav-card-price">R$${p.price.toFixed(2).replace('.',',')}</div>
+        <div class="fav-card-footer">
+          <button class="fav-add-btn" onclick="addFavToCart(${p.id})">+ Carrinho</button>
+          <button class="unfav-btn" onclick="removeFav(${p.id})" title="Remover">❤️</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function addFavToCart(id) {
+  const p = DB_PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  // Adiciona ao carrinho de repeat para o site pegar
+  const c = JSON.parse(sessionStorage.getItem('diana_cart_repeat') || '[]');
+  const ex = c.find(i => i.id === id);
+  if (ex) ex.qty++;
+  else c.push({ id: p.id, name: p.name, price: p.price, emoji: p.emoji, qty: 1 });
+  sessionStorage.setItem('diana_cart_repeat', JSON.stringify(c));
+  toast('🍔 ' + p.name + ' adicionado! Volte ao site para finalizar.');
+}
+
+function removeFav(id) {
+  let favs = getFavs().filter(f => f !== id);
+  localStorage.setItem('diana_favs', JSON.stringify(favs));
+  document.getElementById('fav-card-' + id)?.remove();
+  if (!favs.length) renderFavs();
+  toast('💔 Removido dos favoritos');
+}
+
+// ── ENDEREÇO ──
+function saveAddr() {
+  CU.address = {
+    cep:    document.getElementById('a-cep').value,
+    bairro: document.getElementById('a-bairro').value,
+    rua:    document.getElementById('a-rua').value,
+    num:    document.getElementById('a-num').value,
+    comp:   document.getElementById('a-comp').value,
+    ref:    document.getElementById('a-ref').value,
+  };
+  persistUser();
+  if (CU.address.rua && CU.address.num) showAddrMap(CU.address);
+  toast('✅ Endereço salvo!');
+}
+
+function showAddrMap(a) {
+  const mapCard = document.getElementById('addr-map-card');
+  const frame   = document.getElementById('addr-map-frame');
+  if (!mapCard || !frame) return;
+  const q = encodeURIComponent(`${a.rua}, ${a.num}, ${a.bairro}, Aracaju, SE, Brasil`);
+  frame.src = `https://www.google.com/maps?q=${q}&output=embed`;
+  mapCard.style.display = 'block';
+}
+
+async function buscaCep(el) {
+  const cep = el.value.replace(/\D/g, '');
+  if (cep.length !== 8) return;
+  try {
+    const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const d = await r.json();
+    if (d.erro) { toast('⚠️ CEP não encontrado'); return; }
+    if (d.logradouro) document.getElementById('a-rua').value    = d.logradouro;
+    if (d.bairro)     document.getElementById('a-bairro').value = d.bairro;
+    toast('📍 Endereço encontrado pelo CEP!');
+  } catch {}
+}
+
+// ── PAGAMENTO ──
+function togglePayFields() {
+  const m = document.getElementById('pay-method').value;
+  document.getElementById('pix-f').style.display  = m === 'pix' ? 'block' : 'none';
+  document.getElementById('card-f').style.display = (m === 'credito' || m === 'debito') ? 'block' : 'none';
+}
+
+function savePay() {
+  CU.payment = {
+    method:   document.getElementById('pay-method').value,
+    pixKey:   document.getElementById('pay-pix').value,
+    cardName: document.getElementById('pay-cn').value,
+    cardNum:  document.getElementById('pay-cnum').value,
+    cardExp:  document.getElementById('pay-cexp').value,
+    cardBank: document.getElementById('pay-cbank').value,
+  };
+  persistUser();
+  toast('✅ Dados de pagamento salvos!');
+}
+
+// ── CONTA ──
+function saveAcct() {
+  CU.name  = document.getElementById('ac-name').value.trim()  || CU.name;
+  CU.last  = document.getElementById('ac-last').value.trim();
+  CU.phone = document.getElementById('ac-phone').value.trim();
+  CU.birth = document.getElementById('ac-birth')?.value || '';
+  persistUser();
+  const ini = (CU.name[0] + (CU.last ? CU.last[0] : CU.name[1] || '')).toUpperCase();
+  document.getElementById('pav-ini').textContent     = ini;
+  document.getElementById('p-name-big').textContent  = CU.name + ' ' + (CU.last || '');
+  document.getElementById('nav-avatar-ini').textContent = ini;
+  document.getElementById('nav-nome').textContent    = CU.name;
+  toast('✅ Informações atualizadas!');
+}
+
+function chgPass() {
+  const p1 = document.getElementById('ac-p1').value;
+  const p2 = document.getElementById('ac-p2').value;
+  if (!p1)         { toast('⚠️ Digite a nova senha'); return; }
+  if (p1.length < 6) { toast('⚠️ Senha muito curta (mín. 6 caracteres)'); return; }
+  if (p1 !== p2)   { toast('⚠️ As senhas não coincidem'); return; }
+  CU.pass = p1;
+  persistUser();
+  document.getElementById('ac-p1').value = '';
+  document.getElementById('ac-p2').value = '';
+  document.getElementById('pass-fill').style.width = '0';
+  document.getElementById('pass-label').textContent = '';
+  toast('🔒 Senha alterada com sucesso!');
+}
+
+function checkPassStrength() {
+  const v    = document.getElementById('ac-p1').value;
+  const fill = document.getElementById('pass-fill');
+  const lbl  = document.getElementById('pass-label');
+  let score = 0;
+  if (v.length >= 6)          score++;
+  if (v.length >= 10)         score++;
+  if (/[A-Z]/.test(v))        score++;
+  if (/[0-9]/.test(v))        score++;
+  if (/[^A-Za-z0-9]/.test(v)) score++;
+  const cfg = [
+    { w:'0%',   c:'var(--border)', t:'' },
+    { w:'20%',  c:'#e05555',       t:'Muito fraca' },
+    { w:'40%',  c:'#e05555',       t:'Fraca' },
+    { w:'60%',  c:'#f0a500',       t:'Razoável' },
+    { w:'80%',  c:'#3dba6e',       t:'Boa' },
+    { w:'100%', c:'#2d7a4a',       t:'Muito forte 💪' },
+  ][score];
+  fill.style.width = cfg.w; fill.style.background = cfg.c; lbl.textContent = cfg.t;
+}
+
+// ── FOTO DE PERFIL ──
+function loadAvatarHero() {
+  const saved = localStorage.getItem('diana_avatar_' + CU.id);
+  if (!saved) return;
+  const img   = document.getElementById('pav-img');
+  const ini   = document.getElementById('pav-ini');
+  img.src = saved; img.style.display = 'block'; ini.style.display = 'none';
+}
+
+function loadAvatarNav() {
+  const saved = localStorage.getItem('diana_avatar_' + CU.id);
+  if (!saved) return;
+  const img = document.getElementById('nav-avatar-img');
+  const ini = document.getElementById('nav-avatar-ini');
+  img.src = saved; img.style.display = 'block'; ini.style.display = 'none';
+}
+
+function renderAvatarTab() {
+  const saved  = localStorage.getItem('diana_avatar_' + CU.id);
+  const strip  = document.getElementById('avatar-preview-strip');
+  const simg   = document.getElementById('avatar-strip-img');
+  const sname  = document.getElementById('avatar-strip-name');
+  if (saved && strip) {
+    strip.style.display = 'flex';
+    simg.src  = saved;
+    sname.textContent = CU.name + ' ' + (CU.last || '');
+  } else if (strip) {
+    strip.style.display = 'none';
+  }
+}
+
+function handleAvatarUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { toast('⚠️ Arquivo muito grande (máx. 5 MB)'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => applyAvatar(ev.target.result);
+  reader.readAsDataURL(file);
+}
+
+function applyAvatar(dataUrl) {
+  localStorage.setItem('diana_avatar_' + CU.id, dataUrl);
+  const img  = document.getElementById('pav-img');
+  const ini  = document.getElementById('pav-ini');
+  const nImg = document.getElementById('nav-avatar-img');
+  const nIni = document.getElementById('nav-avatar-ini');
+  img.src = dataUrl; img.style.display = 'block'; ini.style.display = 'none';
+  nImg.src = dataUrl; nImg.style.display = 'block'; nIni.style.display = 'none';
+  renderAvatarTab();
+  toast('✅ Foto de perfil atualizada!');
+}
+
+function removeAvatar() {
+  localStorage.removeItem('diana_avatar_' + CU.id);
+  const ini  = (CU.name[0] + (CU.last ? CU.last[0] : CU.name[1] || '')).toUpperCase();
+  const img  = document.getElementById('pav-img');
+  const iniEl= document.getElementById('pav-ini');
+  const nImg = document.getElementById('nav-avatar-img');
+  const nIni = document.getElementById('nav-avatar-ini');
+  img.src = ''; img.style.display = 'none'; iniEl.textContent = ini; iniEl.style.display = 'block';
+  nImg.src = ''; nImg.style.display = 'none'; nIni.textContent = ini; nIni.style.display = 'block';
+  document.getElementById('avatar-preview-strip').style.display = 'none';
+  toast('🗑️ Foto removida!');
+}
+
+function avatarDragOver(e)  { e.preventDefault(); document.getElementById('avatar-drop-zone').classList.add('drag-over'); }
+function avatarDragLeave()  { document.getElementById('avatar-drop-zone').classList.remove('drag-over'); }
+function avatarDrop(e) {
+  e.preventDefault();
+  document.getElementById('avatar-drop-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith('image/')) { toast('⚠️ Envie uma imagem'); return; }
+  if (file.size > 5 * 1024 * 1024) { toast('⚠️ Arquivo muito grande'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => applyAvatar(ev.target.result);
+  reader.readAsDataURL(file);
+}
+
+// ── PERSISTIR USUÁRIO ──
+function persistUser() {
+  sessionStorage.setItem('diana_cliente_session', JSON.stringify(CU));
+  const users = getUsers();
+  const idx = users.findIndex(u => u.id === CU.id);
+  if (idx >= 0) users[idx] = CU;
+  saveUsers(users);
+}
+
+// ── TOAST ──
+function toast(msg) {
+  const t = document.getElementById('toast-cli');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── MÁSCARAS ──
+function maskCep(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,8);
+  el.value = v.length > 5 ? v.slice(0,5)+'-'+v.slice(5) : v;
+}
+function maskPhone(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  if (v.length > 6) v = '('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7);
+  else if (v.length > 2) v = '('+v.slice(0,2)+') '+v.slice(2);
+  el.value = v;
+}
+function maskCard(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,16);
+  el.value = v.match(/.{1,4}/g)?.join(' ')||v;
+}
+function maskExp(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,4);
+  el.value = v.length > 2 ? v.slice(0,2)+'/'+v.slice(2) : v;
+}
+
+// Modal fechar ao clicar fora
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('open');
+});
+</script>
+</body>
+</html>

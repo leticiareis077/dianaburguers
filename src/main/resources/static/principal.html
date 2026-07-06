@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diana Burguer's</title>
+  <link rel="shortcut icon" href="IMG/icon.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="CSS/global.css">
+  <link rel="stylesheet" href="CSS/principal.css">
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- ══ HEADER ══ -->
+<header class="header" id="main-header">
+  <div class="header-inner">
+    <a class="logo" onclick="goHome()">Diana<span>Burguer's</span></a>
+    <nav class="navbar">
+      <a id="nav-inicio"   class="ativo" onclick="scrollSec('s-inicio')">Início</a>
+      <a id="nav-sobre"    onclick="scrollSec('s-sobre')">Sobre</a>
+      <a id="nav-menu"     onclick="scrollSec('s-menu')">Cardápio</a>
+      <a id="nav-endereco" onclick="scrollSec('s-endereco')">Endereço</a>
+    </nav>
+    <div class="header-icones">
+      <button class="btn btn-ghost btn-sm cart-btn" onclick="toggleCart()">
+        🛒 <span class="cart-badge" id="cart-badge">0</span>
+      </button>
+        <button id="theme-btn" class="btn btn-ghost btn-sm" onclick="toggleTheme()" title="Alternar tema">☀️</button>
+      <div id="nav-auth"></div>
+      <!-- Botão Admin: oculto por padrão, aparece só pra staff após login -->
+      <button class="btn btn-ghost btn-sm" id="admin-btn" style="display:none" onclick="goAdmin()">⚙️ Admin</button>
+    </div>
+  </div>
+</header>
+
+<!-- ══ SITE PÚBLICO ══ -->
+<div id="public-site">
+
+  <!-- HERO -->
+  <section id="s-inicio" class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🔥 Aberto agora · Delivery disponível</div>
+      <h1>O melhor <em>lanche</em> da cidade.</h1>
+      <p>Hambúrgueres artesanais, pizzas e bebidas geladas. Feito com carinho desde 2020.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="scrollSec('s-menu')">Ver cardápio</button>
+        <button class="btn btn-ghost"   onclick="scrollSec('s-endereco')">Nosso endereço</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-num">4.9★</div><div class="stat-label">Avaliação</div></div>
+        <div><div class="stat-num">800+</div><div class="stat-label">Pedidos/mês</div></div>
+        <div><div class="stat-num">20min</div><div class="stat-label">Tempo médio</div></div>
+      </div>
+    </div>
+    <div class="hero-img"><img src="IMG/LOGO DIANAS BURGER.png" alt=""></div>
+  </section>
+
+  <!-- PROMO 
+  <div class="promo-section" id="promo-sec">
+    <div class="promo-banner">
+      <div><h3 id="promo-title">🔥 Combo do Dia — Só hoje!</h3><p id="promo-desc">X-Bacon + Guaraná por R$24,00</p></div>
+      <button class="btn btn-white" onclick="scrollSec('s-menu')">Pedir agora</button>
+    </div>
+  </div>
+-->
+  <!-- DESTAQUES -->
+  <div id="s-menu" class="menu-section">
+    <div class="section-header">
+      <div><div class="section-title">Mais pedidos</div><div class="section-sub">Os favoritos dos clientes</div></div>
+      <a onclick="scrollSec('s-menu-full')" style="font-size:14px;font-weight:600;color:var(--vermelho);cursor:pointer">Ver tudo →</a>
+    </div>
+    <div class="menu-grid" id="featured-grid"></div>
+  </div>
+
+  <!-- CARDÁPIO COMPLETO -->
+  <div id="s-menu-full" class="menu-section">
+    <div class="section-header">
+      <div><div class="section-title">Cardápio</div><div class="section-sub">Monte seu pedido</div></div>
+    </div>
+    <div class="cat-tabs" id="cat-tabs"></div>
+    <div class="sub-tabs" id="sub-tabs" style="display:none"></div>
+    <div class="menu-grid" id="menu-grid"></div>
+  </div>
+
+  <!-- SOBRE -->
+  <section id="s-sobre" class="sobre-section">
+    <div class="secao">
+      <h2 class="titulo-sec">Sobre <span>Nós</span></h2>
+      <div class="sobre-card">
+        <img src="IMG/LOGO DIANAS BURGER.png" alt="Diana Burguer's">
+        <div class="sobre-texto">
+          <h3>O que faz nossa lanchonete</h3>
+          <p>A Diana Burguer's nasceu com um objetivo simples: servir lanches saborosos, bem feitos e com aquele toque especial que conquista no primeiro pedido.</p>
+          <p>Trabalhamos com ingredientes de qualidade, preparo na hora e muito cuidado em cada detalhe. Aqui o cliente é prioridade e o sabor é lei! 😎🔥</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENDEREÇO -->
+  <section id="s-endereco">
+    <div class="secao">
+      <h2 class="titulo-sec">Nosso <span>Endereço</span></h2>
+      <div class="endereco-wrap">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3917.251934763071!2d-37.055913824008904!3d-10.944332122357425!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x71ab386b4e18213%3A0x4601ead8d241770c!2sParque%20da%20Sementeira!5e0!3m2!1spt-BR!2sbr!4v1769438320267" width="100%" height="400" allowfullscreen loading="lazy"></iframe>
+        <p class="endereco-label">📍 Parque da Sementeira, Aracaju - SE</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERFIL — Área do Cliente (redireciona para página própria) -->
+  <div id="profile-pg" class="page" style="display:none"></div>
+
+
+  <div class="modal-overlay ord-detail-modal" id="ord-detail-modal">
+    <div class="modal" style="max-width:540px">
+      <div class="modal-title">🧾 Detalhes do Pedido</div>
+      <div id="ord-detail-content"></div>
+      <div class="modal-footer" style="margin-top:16px">
+        <button class="btn btn-ghost" style="flex:1" onclick="document.getElementById('ord-detail-modal').classList.remove('open')">Fechar</button>
+        <button class="btn btn-primary" style="flex:1" id="ord-repeat-btn">🔄 Repetir pedido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO LOJA -->
+  <div class="info-bar">
+    <div class="info-item"><div class="info-icon">📍</div><div><div class="info-label">Endereço</div><div class="info-value" id="f-addr">Parque da Sementeira, Aracaju-SE</div></div></div>
+    <div class="info-item"><div class="info-icon">⏰</div><div><div class="info-label">Horário</div><div class="info-value" id="f-hours">Seg–Dom: 11h–22h</div></div></div>
+    <div class="info-item"><div class="info-icon">📞</div><div><div class="info-label">WhatsApp</div><div class="info-value" id="f-phone">(79) 9 9999-0000</div></div></div>
+  </div>
+  <footer>© 2026 Diana Burguer's · Todos os direitos reservados</footer>
+</div>
+
+<!-- CARRINHO -->
+<div class="cart-overlay" id="cart-ov" onclick="closeCartOut(event)">
+  <div class="cart-panel">
+    <div class="cart-header"><h3>Seu pedido 🛒</h3><button class="close-btn" onclick="toggleCart()">✕</button></div>
+    <div class="cart-items" id="cart-list"><div class="empty-cart"><div class="empty-icon">🛒</div><p>Carrinho vazio</p></div></div>
+    <div class="cart-footer">
+      <div class="cart-total"><span>Total</span><span class="cart-total-val" id="cart-total">R$0,00</span></div>
+      <button class="btn btn-primary btn-full" onclick="openCheckout()">Finalizar pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <div id="auth-login-view">
+      <div class="modal-title">Bem-vindo de volta 👋</div>
+      <div class="modal-sub">Entre para continuar</div>
+      <div class="form-group"><label>E-mail</label><input type="email" id="l-email" placeholder="seu@email.com"></div>
+      <div class="form-group"><label>Senha</label><input type="password" id="l-pass" placeholder="••••••••"></div>
+      <div class="modal-footer"><button class="btn btn-ghost" onclick="closeAuth()">Cancelar</button><button class="btn btn-primary" style="flex:1" onclick="doLogin()">Entrar</button></div>
+
+      <div class="auth-switch">Não tem conta? <a onclick="switchAuth('reg')">Cadastre-se grátis</a></div>
+    </div>
+    <div id="auth-reg-view" style="display:none">
+      <div class="modal-title">Criar conta 🍔</div>
+      <div class="modal-sub">Rápido e gratuito!</div>
+      <div class="form-row"><div class="form-group"><label>Nome</label><input id="r-name" placeholder="Seu nome"></div><div class="form-group"><label>Sobrenome</label><input id="r-last" placeholder="Sobrenome"></div></div>
+      <div class="form-group"><label>E-mail</label><input type="email" id="r-email" placeholder="seu@email.com"></div>
+      <div class="form-row"><div class="form-group"><label>Telefone</label><input type="tel" id="r-phone" placeholder="(79) 9xxxx-xxxx"></div><div class="form-group"><label>CPF</label><input id="r-cpf" placeholder="000.000.000-00" maxlength="14"></div></div>
+      <div class="form-row"><div class="form-group"><label>Senha</label><input type="password" id="r-pass" placeholder="mín. 6 caracteres"></div><div class="form-group"><label>Confirmar</label><input type="password" id="r-pass2" placeholder="repita"></div></div>
+      <div class="modal-footer"><button class="btn btn-ghost" onclick="closeAuth()">Cancelar</button><button class="btn btn-primary" style="flex:1" onclick="doReg()">Criar conta</button></div>
+      <div class="auth-switch">Já tem conta? <a onclick="switchAuth('login')">Entrar</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkout-modal">
+  <div class="modal">
+    <div class="modal-title">Finalizar pedido 📋</div>
+    <div class="modal-sub">Confirme os detalhes</div>
+    <div class="form-group"><label>Forma de entrega</label><select id="co-deliv" onchange="toggleDelivFields()"><option value="delivery">🛵 Delivery</option><option value="retirada">🏃 Retirar no local</option></select></div>
+    <div id="co-addr-fields">
+      <div id="co-addr-hint" class="hint-box" style="display:none">✅ Endereço preenchido do seu perfil</div>
+      <div class="form-row"><div class="form-group"><label>Rua / Av.</label><input id="co-rua" placeholder="Rua das Flores"></div><div class="form-group"><label>Número</label><input id="co-num" placeholder="123"></div></div>
+      <div class="form-row"><div class="form-group"><label>Bairro</label><input id="co-bairro" placeholder="Centro"></div><div class="form-group"><label>Complemento</label><input id="co-comp" placeholder="Opcional"></div></div>
+    </div>
+    <div class="form-group"><label>Pagamento</label><select id="co-pay"><option value="pix">PIX</option><option value="credito">Cartão de Crédito</option><option value="debito">Cartão de Débito</option><option value="dinheiro">Dinheiro</option></select></div>
+    <div id="co-pay-hint" class="hint-box" style="display:none">✅ Pagamento preenchido do seu perfil</div>
+    <div class="form-group"><label>Observação</label><input id="co-obs" placeholder="Sem cebola, ponto da carne..."></div>
+    <div class="cart-total" style="margin:16px 0 0"><span>Total</span><span class="cart-total-val" id="co-total">R$0,00</span></div>
+    <div class="modal-footer" style="margin-top:12px"><button class="btn btn-ghost" onclick="closeCheckout()">Cancelar</button><button class="btn btn-primary" style="flex:1" onclick="confirmOrder()">Confirmar pedido ✓</button></div>
+  </div>
+</div>
+
+<script src="JS/global.js"></script>
+<script src="JS/principal.js"></script>
+</body>
+</html>
