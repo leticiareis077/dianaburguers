@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: dianaburguers
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /DianaBurgers/principal.html
